@@ -81,6 +81,9 @@ export function TransactionsView({
 
   const [type, setType] = useState<TxType | null>(initialType);
   const [tagIds, setTagIds] = useState<string[]>(initialTagIds);
+  // O campo só mostra tags que já existem na lista carregada. Um id vindo de um link (ou de uma tag
+  // excluída) sem tag correspondente derrubava o desenho dos selos; o filtro em si continua valendo.
+  const visibleTagIds = tagIds.filter((id) => tags.some((t) => t.id === id));
   // Busca por descrição: o campo responde na hora e a consulta espera uma pausa na digitação.
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch] = useDebouncedValue(searchText.trim(), 300);
@@ -283,10 +286,10 @@ export function TransactionsView({
         />
         <MultiSelect
           label="Tags"
-          placeholder={tagIds.length ? undefined : 'Todas'}
+          placeholder={visibleTagIds.length ? undefined : 'Todas'}
           clearable
           data={tags.map((t) => ({ value: t.id, label: t.name }))}
-          value={tagIds}
+          value={visibleTagIds}
           onChange={(v) => {
             setTagIds(v);
             setPage(1);
@@ -299,7 +302,8 @@ export function TransactionsView({
               </Badge>
             </Group>
           )}
-          renderPill={({ option, onRemove }) => (
+          renderPill={({ option, onRemove }) =>
+            !option ? null : (
             <Badge
               color={tags.find((t) => t.id === option.value)?.color}
               variant="light"
@@ -309,7 +313,8 @@ export function TransactionsView({
             >
               {option.label}
             </Badge>
-          )}
+            )
+          }
           // Uma linha só: o campo não cresce e as tags que não cabem ficam cortadas no final.
           styles={{
             pillsList: { gap: 6, flexWrap: 'nowrap', overflow: 'hidden' },
