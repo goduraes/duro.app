@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/auth';
+import { avatarPublicUrl } from '@/lib/avatar';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { UsersTable, type UserRow, type StatusFilter, type SortKey } from '@/components/admin/users-table';
 
@@ -36,7 +37,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
 
   let query = admin
     .from('profiles')
-    .select('id, name, email, role, is_active, created_at, last_sign_in_at', { count: 'exact' })
+    .select('id, name, email, role, is_active, created_at, last_sign_in_at, avatar_path', { count: 'exact' })
     .order(sort ?? 'created_at', { ascending: sort ? dir === 'asc' : false, nullsFirst: false })
     .order('created_at', { ascending: false })
     .order('id')
@@ -73,6 +74,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
     is_active: p.is_active,
     created_at: p.created_at,
     last_sign_in_at: p.last_sign_in_at,
+    avatar_url: avatarPublicUrl(p.avatar_path),
   }));
 
   return (

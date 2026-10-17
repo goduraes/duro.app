@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 import {
+  Avatar,
   Badge,
   Group,
   Pagination,
@@ -38,6 +39,8 @@ export interface UserRow {
   is_active: boolean;
   created_at: string;
   last_sign_in_at: string | null;
+  /** URL da foto de perfil; nulo = sem foto (mostra a inicial do nome). */
+  avatar_url: string | null;
 }
 
 interface Props {
@@ -212,7 +215,10 @@ export function UsersTable({ users, currentUserId, total, page, pageSize, q, sta
                 return (
                   <Table.Tr key={u.id}>
                     <Table.Td>
-                      <Group gap="xs" wrap="nowrap">
+                      <Group gap="sm" wrap="nowrap">
+                        <Avatar src={u.avatar_url} alt={u.name || u.email} size={36} radius="xl" color="brand" variant="filled">
+                          {(u.name || u.email).slice(0, 1).toUpperCase()}
+                        </Avatar>
                         <div>
                           <Text size="sm" fw={600}>
                             {u.name || '—'}
