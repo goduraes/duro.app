@@ -18,6 +18,9 @@ export interface Transaction {
   recurring_id: string | null;
   /** Data original da ocorrência da recorrência (identifica o mês); nulo em transações reais. */
   recurring_ref: string | null;
+  /** Parcela atual e total, quando a recorrência tem mês de fim (ex.: 2 de 3); senão nulos. */
+  installment: number | null;
+  installments: number | null;
 }
 
 export interface Recurring {
@@ -28,6 +31,8 @@ export interface Recurring {
   start_date: string; // YYYY-MM-DD
   end_date: string | null; // null = sem data final
   day_of_month: number;
+  /** Total informado de uma recorrência parcelada; nulo quando não é parcelada. */
+  total_cents: number | null;
   tags: Tag[];
 }
 

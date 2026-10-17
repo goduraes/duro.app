@@ -50,6 +50,7 @@ export const recurringSchema = z
   .object({
     type: z.enum(['income', 'expense']),
     description: z.string().trim().min(1, 'Informe a descrição').max(120, 'Máximo de 120 caracteres'),
+    // Em "parcelas" é o valor total; nos outros modos é o valor de cada mês.
     amount: z
       .number('Informe o valor')
       .positive('O valor deve ser maior que zero')
@@ -60,15 +61,27 @@ export const recurringSchema = z
       .min(1, 'Dia entre 1 e 31')
       .max(31, 'Dia entre 1 e 31'),
     start_date: z.string('Informe o mês de início').regex(/^\d{4}-\d{2}-\d{2}$/, 'Informe o mês de início'),
-    end_date: z
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Mês final inválido')
-      .nullable(),
+    // until = valor mensal, com mês de fim opcional (sem mês de fim = sem prazo) | installments = N parcelas do total
+    mode: z.enum(['until', 'installments']),
+    end_date: z.string().nullable(),
+    installments: z.number('Informe de 2 a 120 parcelas').nullable(),
     tag_ids: z.array(z.string()),
   })
-  .refine((v) => !v.end_date || v.end_date >= v.start_date, {
-    path: ['end_date'],
-    message: 'O mês final deve ser igual ou posterior ao inicial',
+  .superRefine((v, ctx) => {
+    if (v.mode === 'until') {
+      if (v.end_date && v.end_date < v.start_date) {
+        ctx.addIssue({ code: 'custom', path: ['end_date'], message: 'O mês final deve ser igual ou posterior ao inicial' });
+      }
+    }
+    if (v.mode === 'installments') {
+      const n = v.installments;
+      if (n === null || !Number.isInteger(n) || n < 2 || n > 120) {
+        ctx.addIssue({ code: 'custom', path: ['installments'], message: 'Informe de 2 a 120 parcelas' });
+      } else if (Math.round(v.amount * 100) < n) {
+        // cada parcela precisa valer pelo menos 1 centavo
+        ctx.addIssue({ code: 'custom', path: ['amount'], message: 'O valor é pequeno demais para essa quantidade de parcelas' });
+      }
+    }
   });
 
 export const tagSchema = z.object({

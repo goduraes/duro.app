@@ -18,13 +18,15 @@ import {
   Skeleton,
   Stack,
   Table,
+  TextInput,
   CheckIcon,
   Text,
   Tooltip,
 } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
-import { IconPencil, IconPlus, IconRepeat, IconTrash } from '@tabler/icons-react';
+import { IconPencil, IconPlus, IconRepeat, IconSearch, IconTrash } from '@tabler/icons-react';
 import { usePrivacy } from '@/components/privacy';
 import { createClient } from '@/lib/supabase/client';
 import { useTags } from '@/hooks/use-tags';
@@ -54,6 +56,8 @@ interface RawRow {
   type: TxType;
   occurred_on: string;
   tags: Tag[];
+  installment: number | null;
+  installments: number | null;
   total: number;
 }
 
@@ -65,6 +69,10 @@ export function TransactionsView({ period }: { period: Period }) {
 
   const [type, setType] = useState<TxType | null>(null);
   const [tagIds, setTagIds] = useState<string[]>([]);
+  // Busca por descrição: o campo responde na hora e a consulta espera uma pausa na digitação.
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearch] = useDebouncedValue(searchText.trim(), 300);
+  const search = debouncedSearch || null;
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = usePageSize();
   // null = ordem padrão (data, mais recente primeiro), sem seta nos cabeçalhos
@@ -79,10 +87,10 @@ export function TransactionsView({ period }: { period: Period }) {
   // Mudou o mês: volta para a primeira página.
   useEffect(() => {
     setPage(1);
-  }, [from, to]);
+  }, [from, to, search]);
 
   const list = useQuery({
-    queryKey: ['transactions', from, to, type, tagIds, page, pageSize, sort.key, sort.dir],
+    queryKey: ['transactions', from, to, type, tagIds, search, page, pageSize, sort.key, sort.dir],
     enabled: !!range,
     placeholderData: keepPreviousData,
     queryFn: async () => {
@@ -96,6 +104,7 @@ export function TransactionsView({ period }: { period: Period }) {
         p_dir: sort.dir,
         p_limit: pageSize,
         p_offset: (page - 1) * pageSize,
+        p_search: search,
       });
       if (error) throw new Error(error.message);
       const raw = (data ?? []) as RawRow[];
@@ -108,6 +117,8 @@ export function TransactionsView({ period }: { period: Period }) {
         recurring_id: r.recurring_id,
         // a chave de uma ocorrência é "<recorrência>:<data original>"
         recurring_ref: r.recurring_id ? r.key.split(':')[1] : null,
+        installment: r.installment,
+        installments: r.installments,
         tags: r.tags,
       }));
       return { rows, count: raw.length ? Number(raw[0].total) : 0 };
@@ -115,7 +126,7 @@ export function TransactionsView({ period }: { period: Period }) {
   });
 
   const totals = useQuery({
-    queryKey: ['transactions', 'totals', from, to, type, tagIds],
+    queryKey: ['transactions', 'totals', from, to, type, tagIds, search],
     enabled: !!range,
     placeholderData: keepPreviousData,
     queryFn: async () => {
@@ -124,6 +135,7 @@ export function TransactionsView({ period }: { period: Period }) {
         p_to: to,
         p_type: type,
         p_tags: tagIds,
+        p_search: search,
       });
       if (error) throw new Error(error.message);
       const row = (data as { income_cents: number; expense_cents: number }[] | null)?.[0];
@@ -209,6 +221,20 @@ export function TransactionsView({ period }: { period: Period }) {
     <Stack gap="lg">
       <Group align="flex-end" justify="space-between" gap="sm">
       <Group align="flex-end" gap="sm">
+        <TextInput
+          label="Busca"
+          placeholder="Buscar por descrição"
+          leftSection={<IconSearch size={16} />}
+          value={searchText}
+          onChange={(e) => setSearchText(e.currentTarget.value)}
+          rightSectionPointerEvents="all"
+          rightSection={
+            searchText ? (
+              <CloseButton size="sm" variant="transparent" aria-label="Limpar busca" onClick={() => setSearchText('')} />
+            ) : undefined
+          }
+          w={{ base: '100%', sm: 200 }}
+        />
         <Select
           label="Tipo"
           placeholder="Todos"
@@ -238,7 +264,6 @@ export function TransactionsView({ period }: { period: Period }) {
           label="Tags"
           placeholder={tagIds.length ? undefined : 'Todas'}
           clearable
-          searchable
           data={tags.map((t) => ({ value: t.id, label: t.name }))}
           value={tagIds}
           onChange={(v) => {
@@ -330,6 +355,11 @@ export function TransactionsView({ period }: { period: Period }) {
                   <Table.Td>
                     <Group gap={6} wrap="nowrap">
                       <span>{t.description}</span>
+                      {t.installment && t.installments && (
+                        <Text span size="xs" c="dimmed" style={{ whiteSpace: 'nowrap' }}>
+                          ({t.installment}/{t.installments})
+                        </Text>
+                      )}
                       {t.recurring_id && (
                         <Tooltip label="Lançamento de uma recorrência" withArrow>
                           <IconRepeat size={14} style={{ opacity: 0.6, flexShrink: 0 }} aria-label="Recorrente" />

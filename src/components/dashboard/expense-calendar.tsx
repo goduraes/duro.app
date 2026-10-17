@@ -22,6 +22,8 @@ interface RawRow {
   amount_cents: number;
   occurred_on: string;
   tags: { name: string }[] | null;
+  installment: number | null;
+  installments: number | null;
 }
 
 const WEEKDAYS = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
@@ -54,7 +56,7 @@ export function ExpenseCalendar({ from, to }: { from: string; to: string }) {
       return ((data ?? []) as unknown as RawRow[]).map(
         (r): Expense => ({
           id: r.key,
-          description: r.description,
+          description: r.installment && r.installments ? `${r.description} (${r.installment}/${r.installments})` : r.description,
           amount_cents: r.amount_cents,
           occurred_on: r.occurred_on,
           tagNames: (r.tags ?? []).map((t) => t.name),

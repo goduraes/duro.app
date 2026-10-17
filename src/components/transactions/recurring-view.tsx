@@ -23,6 +23,7 @@ interface RawRow {
   start_date: string;
   end_date: string | null;
   day_of_month: number;
+  total_cents: number | null;
   recurring_transaction_tags: { tags: Tag | null }[];
 }
 
@@ -40,7 +41,7 @@ export function RecurringView({ period }: { period: Period }) {
       const { data, error } = await createClient()
         .from('recurring_transactions')
         .select(
-          'id, description, amount_cents, type, start_date, end_date, day_of_month, recurring_transaction_tags(tags(id, name, color))',
+          'id, description, amount_cents, type, start_date, end_date, day_of_month, total_cents, recurring_transaction_tags(tags(id, name, color))',
         )
         .order('created_at', { ascending: false });
       if (error) throw new Error(error.message);
@@ -53,6 +54,7 @@ export function RecurringView({ period }: { period: Period }) {
           start_date: r.start_date,
           end_date: r.end_date,
           day_of_month: r.day_of_month,
+          total_cents: r.total_cents,
           tags: r.recurring_transaction_tags.map((rt) => rt.tags).filter((t): t is Tag => t !== null),
         }),
       );
@@ -117,7 +119,7 @@ export function RecurringView({ period }: { period: Period }) {
       title: 'Excluir recorrência',
       children: (
         <Text size="sm">
-          Excluir <b>{r.description}</b> ({mask(formatCents(r.amount_cents))} por mês)? Ela some de todos os meses, no histórico e no dashboard.
+          Excluir <b>{r.description}</b> ({mask(formatCents(r.amount_cents))}{r.end_date ? ' por parcela' : ' por mês'})? Ela some de todos os meses, no histórico e no dashboard.
         </Text>
       ),
       labels: { confirm: 'Excluir', cancel: 'Cancelar' },
@@ -139,10 +141,20 @@ export function RecurringView({ period }: { period: Period }) {
     if (r.start_date > to || (r.end_date !== null && r.end_date < from)) return [];
     const day = Math.min(r.day_of_month, dayjs(from).daysInMonth());
     const ov = overrides.data?.get(r.id);
+    // Parcela deste mês, quando a recorrência tem mês de fim.
+    const installments = r.end_date ? dayjs(r.end_date).diff(dayjs(r.start_date).startOf('month'), 'month') + 1 : null;
+    const installment = installments ? dayjs(from).diff(dayjs(r.start_date).startOf('month'), 'month') + 1 : null;
     return [
       {
         ...r,
         skipped: !!ov?.is_skipped,
+        installment,
+        installments,
+        // A última parcela de uma recorrência parcelada fecha o total informado.
+        monthAmount:
+          r.total_cents && installment && installment === installments
+            ? r.total_cents - r.amount_cents * (installments - 1)
+            : r.amount_cents,
         occurrence: ov?.occurred_on ?? dayjs(from).date(day).format('YYYY-MM-DD'),
       },
     ];
@@ -205,7 +217,14 @@ export function RecurringView({ period }: { period: Period }) {
               {rows.map((r) => {
                 return (
                   <Table.Tr key={r.id}>
-                    <Table.Td fw={600}>{r.description}</Table.Td>
+                    <Table.Td fw={600}>
+                      {r.description}
+                      {r.installment && r.installments && (
+                        <Text span size="xs" fw={400} c="dimmed" ml={6}>
+                          ({r.installment}/{r.installments})
+                        </Text>
+                      )}
+                    </Table.Td>
                     <Table.Td>
                       <Group gap={4}>
                         {r.tags.map((tag) => (
@@ -217,7 +236,7 @@ export function RecurringView({ period }: { period: Period }) {
                     </Table.Td>
                     <Table.Td>{r.day_of_month}</Table.Td>
                     <Table.Td ta="right" fw={600} c={r.type === 'income' ? 'teal' : 'red'}>
-                      {r.type === 'income' ? '+' : '−'} {mask(formatCents(r.amount_cents))}
+                      {r.type === 'income' ? '+' : '−'} {mask(formatCents(r.monthAmount))}
                     </Table.Td>
                     <Table.Td>
                       <Group gap={6} wrap="nowrap">
