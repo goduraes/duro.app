@@ -23,6 +23,7 @@ import { notifications } from '@mantine/notifications';
 import { IconSearch } from '@tabler/icons-react';
 import { setUserActive, setUserRole } from '@/app/(app)/admin/usuarios/actions';
 import { TablePagination } from '@/components/table-pagination';
+import { readStoredPageSize } from '@/hooks/use-page-size';
 import { SortableTh, nextSort, type SortDir } from '@/components/sortable-th';
 import type { ActionResult, Role } from '@/lib/types';
 
@@ -79,6 +80,13 @@ export function UsersTable({ users, currentUserId, total, page, pageSize, q, sta
     const qs = params.toString();
     startNav(() => router.replace(qs ? `${pathname}?${qs}` : pathname));
   }
+
+  // O tamanho vem da URL (a lista é carregada no servidor): ao abrir, aplica o salvo no navegador.
+  useEffect(() => {
+    const stored = readStoredPageSize();
+    if (stored && stored !== pageSize) go({ size: stored, page: 1 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const term = debouncedSearch.trim();

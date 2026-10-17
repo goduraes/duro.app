@@ -88,6 +88,12 @@ export function TagsView() {
         </Alert>
       )}
 
+      {!tags.isLoading && (
+        <Text size="sm" c="dimmed">
+          {rows.length} {rows.length === 1 ? 'tag encontrada' : 'tags encontradas'}
+        </Text>
+      )}
+
       <Paper withBorder>
         <Table verticalSpacing="sm" highlightOnHover>
           <Table.Thead>

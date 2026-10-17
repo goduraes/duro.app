@@ -2,6 +2,7 @@
 
 import { Group, Pagination, Select, Stack, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { storePageSize } from '@/hooks/use-page-size';
 
 interface Props {
   total: number;
@@ -38,7 +39,12 @@ export function TablePagination({ total, page, pageSize, pageSizes, onPageChange
         allowDeselect={false}
         data={pageSizes}
         value={String(pageSize)}
-        onChange={(v) => v && onPageSizeChange(Number(v))}
+        onChange={(v) => {
+          if (!v) return;
+          // Lembra a escolha para todas as tabelas do sistema.
+          storePageSize(Number(v));
+          onPageSizeChange(Number(v));
+        }}
         aria-label="Itens por página"
       />
     </Group>

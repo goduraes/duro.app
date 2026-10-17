@@ -33,6 +33,7 @@ import type { Tag, Transaction, TxType } from '@/lib/types';
 import { isCompletePeriod, type Period } from '@/components/period-filter';
 import { SortableTh, nextSort, type Sort, type SortDir } from '@/components/sortable-th';
 import { TablePagination } from '@/components/table-pagination';
+import { usePageSize } from '@/hooks/use-page-size';
 import { TransactionForm } from './transaction-form';
 
 const PAGE_SIZES = ['10', '25', '50'];
@@ -65,7 +66,7 @@ export function TransactionsView({ period }: { period: Period }) {
   const [type, setType] = useState<TxType | null>(null);
   const [tagIds, setTagIds] = useState<string[]>([]);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = usePageSize();
   // null = ordem padrão (data, mais recente primeiro), sem seta nos cabeçalhos
   const [userSort, setUserSort] = useState<Sort<SortKey> | null>(null);
   const sort: Sort<SortKey> = userSort ?? { key: 'occurred_on', dir: 'desc' };
