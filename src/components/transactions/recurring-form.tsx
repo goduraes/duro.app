@@ -7,6 +7,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { formatMonthLabel } from '@/components/period-filter';
 import { TagSelect } from '@/components/tag-select';
 import { createClient } from '@/lib/supabase/client';
 import { formatCents, fromCents, toCents } from '@/lib/money';
@@ -191,7 +192,11 @@ export function RecurringForm({ recurring, tags, onDone }: Props) {
         />
 
         <Group grow align="flex-start">
-          <MonthPickerInput label="Mês de início" valueFormat="MMMM [de] YYYY" {...form.getInputProps('start_date')} />
+          <MonthPickerInput
+            label="Mês de início"
+            valueFormatter={({ date }) => (typeof date === 'string' ? formatMonthLabel(date, true) : '')}
+            {...form.getInputProps('start_date')}
+          />
           {mode === 'until' && (
             <MonthPickerInput
               label="Mês de fim"
@@ -199,7 +204,7 @@ export function RecurringForm({ recurring, tags, onDone }: Props) {
               description="Em branco, não tem fim"
               inputWrapperOrder={['label', 'input', 'description', 'error']}
               clearable
-              valueFormat="MMMM [de] YYYY"
+              valueFormatter={({ date }) => (typeof date === 'string' ? formatMonthLabel(date, true) : '')}
               minDate={form.values.start_date || undefined}
               {...form.getInputProps('end_date')}
             />

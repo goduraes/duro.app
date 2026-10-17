@@ -1,13 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import {
   Alert,
+  Anchor,
   Badge,
   Box,
   Center,
+  Grid,
   Group,
   Modal,
   Paper,
@@ -23,7 +26,9 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { BarChart, DonutChart } from '@mantine/charts';
 import { IconArrowDownRight, IconArrowUpRight, IconWallet } from '@tabler/icons-react';
+import { BudgetProgressCard } from '@/components/dashboard/budget-progress-card';
 import { ExpenseCalendar } from '@/components/dashboard/expense-calendar';
+import { RecentTransactionsCard } from '@/components/dashboard/recent-transactions-card';
 import { PageHeader } from '@/components/page-header';
 import { usePrivacy } from '@/components/privacy';
 import { createClient } from '@/lib/supabase/client';
@@ -286,7 +291,14 @@ export function DashboardView() {
               </Stack>
             </Stack>
           ) : donutData.length === 0 ? (
-            <Empty>Sem {tagType === 'expense' ? 'despesas' : 'receitas'} no período.</Empty>
+            <Stack align="center" justify="center" gap={6} style={{ flex: 1 }} py="xl">
+              <Text c="dimmed" size="sm" ta="center">
+                Sem {tagType === 'expense' ? 'despesas' : 'receitas'} no período.
+              </Text>
+              <Anchor component={Link} href="/transacoes?nova=1" size="sm" fw={600}>
+                Criar transação
+              </Anchor>
+            </Stack>
           ) : (
             <>
             <Stack align="center" justify="center" gap="lg" style={{ flex: 1 }}>
@@ -403,6 +415,17 @@ export function DashboardView() {
           <Text fw={700}>{mask(formatBRL(donutTotal))}</Text>
         </Group>
       </Modal>
+
+      {range && (
+        <Grid gap="md">
+          <Grid.Col span={{ base: 12, lg: 8 }}>
+            <BudgetProgressCard from={from} to={to} />
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, lg: 4 }}>
+            <RecentTransactionsCard from={from} to={to} />
+          </Grid.Col>
+        </Grid>
+      )}
 
       <Paper withBorder p="lg">
         <Group justify="space-between" align="flex-start" mb="md" wrap="nowrap">

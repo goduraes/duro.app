@@ -34,29 +34,29 @@ begin
   -- o trigger on_auth_user_created já criou os profiles como 'common'
   update public.profiles set role = 'admin' where id = v_admin;
 
-  -- as tags padrão (Moradia, Mercado, ...) já foram criadas pelo trigger on_auth_user_created
+  -- as tags padrão (Moradia, Alimentação, ...) já foram criadas pelo trigger on_auth_user_created
 
   for r in
     select * from (values
       ('Salário',            'income',  650000,   3, 'Salário'),
       ('Aluguel',            'expense', 180000,   2, 'Moradia'),
-      ('Supermercado',       'expense',  42350,   4, 'Mercado'),
+      ('Supermercado',       'expense',  42350,   4, 'Alimentação'),
       ('Combustível',        'expense',  25000,   6, 'Transporte'),
       ('Cinema',             'expense',   8000,   9, 'Lazer'),
       ('Farmácia',           'expense',  12790,  12, 'Saúde'),
       ('Freelance',          'income',  120000,  15, null),
       ('Salário',            'income',  650000,  33, 'Salário'),
       ('Aluguel',            'expense', 180000,  32, 'Moradia'),
-      ('Supermercado',       'expense',  51210,  36, 'Mercado'),
+      ('Supermercado',       'expense',  51210,  36, 'Alimentação'),
       ('Uber',               'expense',   6890,  40, 'Transporte'),
       ('Restaurante',        'expense',  15400,  44, 'Lazer'),
       ('Salário',            'income',  650000,  63, 'Salário'),
       ('Aluguel',            'expense', 180000,  62, 'Moradia'),
-      ('Supermercado',       'expense',  47890,  66, 'Mercado'),
+      ('Supermercado',       'expense',  47890,  66, 'Alimentação'),
       ('Consulta médica',    'expense',  30000,  70, 'Saúde'),
       ('Salário',            'income',  650000,  93, 'Salário'),
       ('Aluguel',            'expense', 180000,  92, 'Moradia'),
-      ('Supermercado',       'expense',  39980,  97, 'Mercado'),
+      ('Supermercado',       'expense',  39980,  97, 'Alimentação'),
       ('Show',               'expense',  22000, 101, 'Lazer')
     ) as x(description, type, amount_cents, days_ago, tag_name)
   loop
