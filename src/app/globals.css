@@ -1,0 +1,305 @@
+:root {
+  --duro-bg: #f6f7fb;
+  --duro-border: #e7e9f2;
+  --duro-shadow: 0 1px 2px rgba(20, 24, 60, 0.04), 0 8px 24px -12px rgba(20, 24, 60, 0.12);
+  --duro-income: #05a89a;
+  --duro-expense: #f2663b;
+  --duro-brand: #6d4aff;
+  --duro-glass: rgba(246, 247, 251, 0.78);
+  --duro-card: #ffffff;
+}
+:root[data-mantine-color-scheme='dark'] {
+  --duro-bg: #141414;
+  --duro-border: #2e2e32;
+  --duro-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  --duro-income: #14ab9c;
+  --duro-expense: #ea6445;
+  --duro-brand: #8b73ff;
+  --duro-glass: rgba(20, 20, 20, 0.78);
+  --duro-card: #1d1d1f;
+}
+body {
+  background: var(--duro-bg);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+:root[data-mantine-color-scheme='dark'] .mantine-Paper-root:not(.duro-hero) {
+  background: var(--duro-card);
+  border-color: var(--duro-border);
+}
+:root[data-mantine-color-scheme='light'] .mantine-Paper-root[data-with-border] {
+  border-color: var(--duro-border);
+}
+.duro-header {
+  background: var(--duro-glass) !important;
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--duro-border) !important;
+}
+.duro-navbar {
+  background: var(--duro-bg) !important;
+  border-right: 1px solid var(--duro-border) !important;
+}
+.duro-hero {
+  background: radial-gradient(120% 140% at 0% 0%, #8b73ff 0%, #6d4aff 45%, #3a2299 100%);
+  color: #fff;
+  border: 0 !important;
+  position: relative;
+  overflow: hidden;
+}
+.duro-hero::after {
+  content: '';
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 70%);
+  pointer-events: none;
+}
+.duro-auth-panel {
+  background: radial-gradient(130% 120% at 0% 0%, #8b73ff 0%, #6d4aff 40%, #2a1773 100%);
+  color: #fff;
+}
+
+/* Inputs com a mesma cor dos cards */
+:root[data-mantine-color-scheme] .mantine-Input-input,
+:root[data-mantine-color-scheme] .mantine-PasswordInput-input,
+:root[data-mantine-color-scheme] .mantine-PasswordInput-innerInput {
+  background: var(--duro-card);
+  border-color: var(--duro-border);
+}
+:root[data-mantine-color-scheme='dark'] .mantine-Input-input:focus,
+:root[data-mantine-color-scheme='light'] .mantine-Input-input:focus {
+  border-color: var(--mantine-primary-color-filled);
+}
+
+/* Hover e bordas */
+:root {
+  --duro-hover: rgba(109, 74, 255, 0.07);
+}
+:root[data-mantine-color-scheme='dark'] {
+  --duro-hover: rgba(139, 115, 255, 0.14);
+}
+.mantine-NavLink-root:hover {
+  background: var(--duro-hover);
+}
+.mantine-NavLink-root[data-active]:hover {
+  background: var(--mantine-primary-color-light-hover);
+}
+.mantine-Table-table {
+  --table-border-color: var(--duro-border);
+  --table-hover-color: var(--duro-hover);
+  --table-striped-color: var(--duro-hover);
+}
+.mantine-Table-tr:hover {
+  background: var(--duro-hover);
+}
+.mantine-Table-thead .mantine-Table-tr:hover {
+  background: transparent;
+}
+.mantine-Table-table[data-with-table-border],
+.mantine-ScrollArea-root,
+.mantine-Table-scrollContainer {
+  border-color: var(--duro-border);
+}
+
+/* Skeleton de loading */
+:root {
+  --duro-skel: #e9ebf5;
+  --duro-skel-shine: #f6f7fc;
+}
+:root[data-mantine-color-scheme='dark'] {
+  --duro-skel: #26262a;
+  --duro-skel-shine: #34343a;
+}
+.mantine-Skeleton-root::before {
+  background: var(--duro-skel) !important;
+}
+.mantine-Skeleton-root::after {
+  background: var(--duro-skel-shine) !important;
+}
+
+/* Botão de tema */
+.duro-icon-btn {
+  background: var(--duro-card);
+  border-color: var(--duro-border);
+  color: var(--mantine-color-text);
+  transition: background 0.15s, border-color 0.15s;
+}
+.duro-icon-btn:hover {
+  background: var(--duro-hover);
+  border-color: var(--duro-brand);
+  color: var(--duro-brand);
+}
+
+/* Alinhamento dos botões do cabeçalho */
+.duro-icon-btn span {
+  line-height: 0;
+}
+.duro-icon-btn svg {
+  display: block;
+}
+.duro-avatar-btn {
+  padding: 0;
+  border: 2px solid var(--duro-border);
+  transition: border-color 0.15s;
+}
+.duro-avatar-btn:hover {
+  border-color: var(--duro-brand);
+}
+.duro-avatar-btn .mantine-Avatar-root {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+/* Superfícies flutuantes seguem a cor dos cards (modais, menus, selects, calendário, avisos) */
+.mantine-Modal-content,
+.mantine-Modal-header,
+.mantine-Popover-dropdown,
+.mantine-Menu-dropdown,
+.mantine-Select-dropdown,
+.mantine-MultiSelect-dropdown,
+.mantine-Combobox-dropdown,
+.mantine-Notification-root {
+  background: var(--duro-card);
+  border-color: var(--duro-border);
+}
+.mantine-Menu-item:hover,
+.mantine-Combobox-option:hover,
+.mantine-Combobox-option[data-combobox-selected] {
+  background: var(--duro-hover);
+}
+.mantine-Pagination-control,
+.mantine-SegmentedControl-root,
+.mantine-Switch-track {
+  border-color: var(--duro-border);
+}
+:root[data-mantine-color-scheme='dark'] .mantine-SegmentedControl-root {
+  background: #141414;
+}
+:root[data-mantine-color-scheme='dark'] .mantine-SegmentedControl-indicator {
+  background: var(--sc-color, #2e2e32);
+}
+:root[data-mantine-color-scheme='dark'] .mantine-Pagination-control:not([data-active]) {
+  background: var(--duro-card);
+}
+:root[data-mantine-color-scheme='dark'] .mantine-Switch-track {
+  background: #2e2e32;
+}
+:root[data-mantine-color-scheme='dark'] .mantine-Switch-input:checked + .mantine-Switch-track {
+  background: var(--mantine-primary-color-filled);
+}
+
+/* Calendário: período selecionado suave e fins de semana sem vermelho */
+:root [class*="-day"][data-size][data-weekend] {
+  color: inherit;
+}
+[class*="-day"][data-size][data-in-range]:not([data-first-in-range]):not([data-last-in-range]) {
+  background: rgba(109, 74, 255, 0.14);
+  color: inherit;
+}
+:root[data-mantine-color-scheme='dark'] [class*="-day"][data-size][data-in-range]:not([data-first-in-range]):not([data-last-in-range]) {
+  background: rgba(139, 115, 255, 0.2);
+}
+
+/* Sem linha dupla no fim da tabela (a borda do card já fecha) */
+.mantine-Paper-root .mantine-Table-table > :last-child > tr:last-child > td,
+.mantine-Paper-root .mantine-Table-table > :last-child > tr:last-child > th {
+  border-bottom: 0;
+}
+.mantine-Paper-root .mantine-Table-table {
+  border-bottom: 0;
+}
+
+/* A borda de linha do Mantine fica no <tr>: remove na última linha da tabela */
+.mantine-Paper-root .mantine-Table-table[data-with-row-border] > :last-child > tr:last-child,
+.mantine-Paper-root .mantine-Table-table[data-with-row-border] > :last-child > tr:last-of-type {
+  border-bottom: 0 !important;
+}
+
+/* Sem linha entre a última linha de dados e o rodapé/fim da tabela */
+.mantine-Paper-root .mantine-Table-tbody > .mantine-Table-tr:last-child {
+  border-bottom: 0 !important;
+}
+
+/* Rodapé da tabela: sem borda inferior (o card já fecha) */
+.mantine-Table-tfoot > .mantine-Table-tr,
+.mantine-Table-tfoot > .mantine-Table-tr:last-child {
+  border-bottom: 0 !important;
+}
+
+/* Botão de tema no rodapé da sidebar */
+.duro-theme-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--mantine-radius-md);
+  border: 1px solid var(--duro-border);
+  background: var(--duro-card);
+  color: var(--mantine-color-text);
+  font-weight: 500;
+  font-size: var(--mantine-font-size-sm);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.duro-theme-btn:hover {
+  background: var(--duro-hover);
+  border-color: var(--duro-brand);
+  color: var(--duro-brand);
+}
+.duro-theme-btn-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Cabeçalhos ordenáveis */
+.duro-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: inherit;
+  color: inherit;
+}
+.duro-sort-btn svg {
+  opacity: 0.45;
+  transition: opacity 0.15s;
+}
+.duro-sort-btn:hover svg,
+.duro-sort-btn[data-active] svg {
+  opacity: 1;
+}
+.duro-sort-btn[data-active] {
+  color: var(--mantine-color-text);
+}
+
+/* Campos com erro mantêm a borda vermelha (a regra de borda dos inputs acima não pode sobrescrevê-la) */
+:root[data-mantine-color-scheme] .mantine-Input-input[data-error],
+:root[data-mantine-color-scheme] .mantine-Input-input[aria-invalid='true'],
+:root[data-mantine-color-scheme] .mantine-PasswordInput-input[data-error] {
+  border-color: var(--mantine-color-error);
+}
+
+/* Mobile: inputs com 16px evitam o zoom automático do iOS ao focar um campo */
+@media (max-width: 47.99em) {
+  :root[data-mantine-color-scheme] .mantine-Input-input,
+  :root[data-mantine-color-scheme] .mantine-PasswordInput-innerInput,
+  :root[data-mantine-color-scheme] input,
+  :root[data-mantine-color-scheme] select,
+  :root[data-mantine-color-scheme] textarea {
+    font-size: 16px;
+  }
+}
+
+/* Tipo da transação: texto da opção ativa em tom escuro da cor (vermelho = despesa, verde = receita) */
+.duro-tx-type[data-type='expense'] .mantine-SegmentedControl-label[data-active] {
+  color: #5c0a0a;
+}
+.duro-tx-type[data-type='income'] .mantine-SegmentedControl-label[data-active] {
+  color: #0b3d1e;
+}
+
+/* Tabelas com rolagem horizontal: sem o espaço extra embaixo do conteúdo (a barra fica sobreposta) */
+.mantine-TableScrollContainer-scrollContainer .mantine-ScrollArea-viewport {
+  padding-bottom: 0 !important;
+}
