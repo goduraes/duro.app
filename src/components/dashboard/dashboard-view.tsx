@@ -11,6 +11,7 @@ import {
   Group,
   Modal,
   Paper,
+  ScrollArea,
   SegmentedControl,
   SimpleGrid,
   Skeleton,
@@ -383,11 +384,13 @@ export function DashboardView() {
           </Group>
         }
       >
-        <Stack gap="sm" mah={400} style={{ overflowY: 'auto' }}>
-          {donutData.map((d) => (
-            <TagRow key={d.name} slice={d} total={donutTotal} mask={mask} />
-          ))}
-        </Stack>
+        <ScrollArea.Autosize mah={400} type="auto" scrollbarSize={6} offsetScrollbars="y">
+          <Stack gap="sm">
+            {donutData.map((d) => (
+              <TagRow key={d.name} slice={d} total={donutTotal} mask={mask} />
+            ))}
+          </Stack>
+        </ScrollArea.Autosize>
         <Group
           justify="space-between"
           mt="md"

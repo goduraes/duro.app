@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { Badge, Box, Group, Modal, Paper, Skeleton, Stack, Text, UnstyledButton } from '@mantine/core';
+import { Badge, Box, Group, Modal, Paper, ScrollArea, Skeleton, Stack, Text, UnstyledButton } from '@mantine/core';
 import { usePrivacy } from '@/components/privacy';
 import { createClient } from '@/lib/supabase/client';
 import { formatCents, formatCentsShort } from '@/lib/money';
@@ -244,7 +244,8 @@ export function ExpenseCalendar({ from, to }: { from: string; to: string }) {
             <Text size="sm" c="dimmed" mb="md">
               {selected.items.length} {selected.items.length === 1 ? 'transação' : 'transações'} neste dia
             </Text>
-            <Stack gap="md" mah={360} style={{ overflowY: 'auto' }}>
+            <ScrollArea.Autosize mah={360} type="auto" scrollbarSize={6} offsetScrollbars="y">
+              <Stack gap="md">
               {selected.items.map((e) => (
                 <Group key={e.id} justify="space-between" wrap="nowrap" align="flex-start">
                   <div style={{ minWidth: 0 }}>
@@ -262,7 +263,8 @@ export function ExpenseCalendar({ from, to }: { from: string; to: string }) {
                   </Text>
                 </Group>
               ))}
-            </Stack>
+              </Stack>
+            </ScrollArea.Autosize>
             <Group
               justify="space-between"
               mt="md"
