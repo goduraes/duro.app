@@ -7,7 +7,7 @@ import { MonthNavigator, currentMonthPeriod, type Period } from '@/components/pe
 import { RecurringView } from './recurring-view';
 import { TransactionsView } from './transactions-view';
 
-export function TransactionsTabs() {
+export function TransactionsTabs({ openNew = false }: { openNew?: boolean }) {
   const [tab, setTab] = useState<string | null>('history');
   const [period, setPeriod] = useState<Period>(currentMonthPeriod);
 
@@ -36,7 +36,7 @@ export function TransactionsTabs() {
         </Tabs.List>
 
         <Tabs.Panel value="history" pt="lg">
-          <TransactionsView period={period} />
+          <TransactionsView period={period} openNew={openNew} />
         </Tabs.Panel>
         <Tabs.Panel value="recurring" pt="lg">
           <RecurringView period={period} />

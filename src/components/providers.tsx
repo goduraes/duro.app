@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import { PrivacyProvider } from '@/components/privacy';
+import { ThemeColorSync } from '@/components/theme-color-sync';
 import { theme } from '@/theme';
 
 dayjs.locale('pt-br');
@@ -25,6 +26,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <MantineProvider theme={theme} defaultColorScheme="auto">
       <DatesProvider settings={{ locale: 'pt-br', firstDayOfWeek: 0 }}>
         <ModalsProvider>
+          <ThemeColorSync />
           <Notifications position="top-right" />
           <QueryClientProvider client={queryClient}>
             <PrivacyProvider>{children}</PrivacyProvider>

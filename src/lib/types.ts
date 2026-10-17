@@ -36,6 +36,21 @@ export interface Recurring {
   tags: Tag[];
 }
 
+export interface BudgetRow {
+  id: string;
+  tag_id: string;
+  tag_name: string;
+  tag_color: string;
+  kind: 'fixed' | 'percent';
+  amount_cents: number | null;
+  percent: number | null;
+  /** Limite do mês: o valor fixo, ou a porcentagem aplicada às receitas do mês. */
+  limit_cents: number;
+  spent_cents: number;
+  /** Quantas despesas da tag compõem o gasto no mês. */
+  tx_count: number;
+}
+
 export interface Profile {
   id: string;
   name: string;

@@ -303,3 +303,14 @@ body {
 .mantine-TableScrollContainer-scrollContainer .mantine-ScrollArea-viewport {
   padding-bottom: 0 !important;
 }
+
+/* Texto clicável discreto (ex.: "11 transações" nos cards de orçamento) */
+.duro-link-btn:not(:disabled):hover,
+.duro-link-btn:not(:disabled):hover * {
+  color: var(--duro-brand) !important;
+}
+.duro-link-btn:focus-visible {
+  outline: 2px solid var(--duro-brand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}

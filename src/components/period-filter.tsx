@@ -10,6 +10,12 @@ export type Period = [string | null, string | null];
 
 const FMT = 'YYYY-MM-DD';
 
+/** "Outubro 2026" / "Outubro de 2026": o nome do mês em português começa com letra maiúscula. */
+export function formatMonthLabel(date: string, withDe = false) {
+  const label = dayjs(date).format(withDe ? 'MMMM [de] YYYY' : 'MMMM YYYY');
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 export function currentMonthPeriod(): [string, string] {
   return [dayjs().startOf('month').format(FMT), dayjs().endOf('month').format(FMT)];
 }
@@ -41,13 +47,13 @@ export function MonthNavigator({ value, onChange }: { value: Period; onChange: (
           <MonthPickerInput
             variant="unstyled"
             leftSection={<IconCalendar size={16} />}
-            valueFormatter={({ date }) => (typeof date === 'string' ? dayjs(date).format('MMMM YYYY') : '')}
+            valueFormatter={({ date }) => (typeof date === 'string' ? formatMonthLabel(date) : '')}
             value={current.startOf('month').format(FMT)}
             onChange={(v) => v && go(dayjs(v))}
             allowDeselect={false}
             w={{ base: 'auto', sm: 170 }}
             style={{ flex: 1 }}
-            styles={{ input: { fontWeight: 600, textTransform: 'lowercase', border: 0, background: 'transparent' } }}
+            styles={{ input: { fontWeight: 600, border: 0, background: 'transparent' } }}
             aria-label="Mês"
           />
           <ActionIcon variant="subtle" color="gray" aria-label="Próximo mês" onClick={() => go(current.add(1, 'month'))}>

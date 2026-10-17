@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -61,9 +62,10 @@ interface RawRow {
   total: number;
 }
 
-export function TransactionsView({ period }: { period: Period }) {
+export function TransactionsView({ period, openNew = false }: { period: Period; openNew?: boolean }) {
   const { mask } = usePrivacy();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const tagsQuery = useTags();
   const tags = tagsQuery.data ?? [];
 
@@ -200,6 +202,15 @@ export function TransactionsView({ period }: { period: Period }) {
     setUserSort((cur) => nextSort(cur, key, first));
     setPage(1);
   }
+
+  // Veio de um link com ?nova=1: abre o formulário e limpa a URL para não reabrir ao atualizar a página.
+  useEffect(() => {
+    if (!openNew) return;
+    setEditing(null);
+    setFormOpen(true);
+    router.replace('/transacoes');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openNew]);
 
   function openForm(t: Transaction | null) {
     setEditing(t);

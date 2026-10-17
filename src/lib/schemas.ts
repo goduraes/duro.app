@@ -84,6 +84,26 @@ export const recurringSchema = z
     }
   });
 
+export const budgetSchema = z
+  .object({
+    tag_id: z.string('Escolha a tag').min(1, 'Escolha a tag'),
+    kind: z.enum(['fixed', 'percent']),
+    // só um dos dois é usado, conforme o tipo; o outro fica nulo
+    amount: z.number('Informe o valor').nullable(),
+    percent: z.number('Informe a porcentagem').nullable(),
+  })
+  .superRefine((v, ctx) => {
+    if (v.kind === 'fixed') {
+      if (v.amount === null || v.amount <= 0) {
+        ctx.addIssue({ code: 'custom', path: ['amount'], message: 'O valor deve ser maior que zero' });
+      } else if (v.amount > 21_000_000) {
+        ctx.addIssue({ code: 'custom', path: ['amount'], message: 'Valor muito alto' });
+      }
+    } else if (v.percent === null || v.percent <= 0 || v.percent > 100) {
+      ctx.addIssue({ code: 'custom', path: ['percent'], message: 'Informe de 0,01% a 100%' });
+    }
+  });
+
 export const tagSchema = z.object({
   name: z.string().trim().min(1, 'Informe o nome').max(40, 'Máximo de 40 caracteres'),
   color: z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Escolha uma cor válida'),
@@ -107,5 +127,6 @@ export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 export type ProfileValues = z.infer<typeof profileSchema>;
 export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
 export type RecurringValues = z.infer<typeof recurringSchema>;
+export type BudgetValues = z.infer<typeof budgetSchema>;
 export type TagValues = z.infer<typeof tagSchema>;
 export type TransactionValues = z.infer<typeof transactionSchema>;
