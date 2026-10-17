@@ -41,7 +41,7 @@ import { createClient } from '@/lib/supabase/client';
 import type { Role } from '@/lib/types';
 
 interface Props {
-  user: { name: string; email: string; role: Role };
+  user: { name: string; email: string; role: Role; avatarUrl: string | null };
   /** Menu lateral recolhido (vem do cookie, lido no servidor). */
   initialCollapsed: boolean;
   children: ReactNode;
@@ -134,7 +134,7 @@ export function AppFrame({ user, initialCollapsed, children }: Props) {
             <Menu position="bottom-end" width={220}>
               <Menu.Target>
                 <ActionIcon variant="transparent" size={38} radius="xl" className="duro-avatar-btn" aria-label="Conta">
-                  <Avatar color="brand" variant="filled" radius="xl" size={34}>
+                  <Avatar src={user.avatarUrl} alt={user.name} color="brand" variant="filled" radius="xl" size={34}>
                     {user.name.slice(0, 1).toUpperCase()}
                   </Avatar>
                 </ActionIcon>

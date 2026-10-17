@@ -58,6 +58,8 @@ export interface Profile {
   role: Role;
   is_active: boolean;
   created_at: string;
+  /** Caminho da foto de perfil no Storage (bucket "avatars"); nulo = sem foto. */
+  avatar_path: string | null;
 }
 
 export interface SummaryRow {
