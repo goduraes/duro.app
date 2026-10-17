@@ -174,14 +174,14 @@ export function AppFrame({ user, children }: Props) {
 
         <AppShell.Section>
           <UnstyledButton className="duro-theme-btn" onClick={toggleColorScheme} aria-label="Alternar tema">
-            {/* Os dois ficam no HTML e o CSS esconde um: evita erro de hidratação com o tema "auto". Mostra o tema ATUAL. */}
+            {/* Os dois ficam no HTML e o CSS esconde um: evita erro de hidratação com o tema "auto". Mostra para qual tema o clique troca. */}
             <Box component="span" darkHidden className="duro-theme-btn-inner">
-              <IconSun size={18} />
-              <span>Tema claro</span>
-            </Box>
-            <Box component="span" lightHidden className="duro-theme-btn-inner">
               <IconMoon size={18} />
               <span>Tema escuro</span>
+            </Box>
+            <Box component="span" lightHidden className="duro-theme-btn-inner">
+              <IconSun size={18} />
+              <span>Tema claro</span>
             </Box>
           </UnstyledButton>
         </AppShell.Section>
