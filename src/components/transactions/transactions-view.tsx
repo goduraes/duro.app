@@ -79,8 +79,8 @@ export function TransactionsView({
   const tagsQuery = useTags();
   const tags = tagsQuery.data ?? [];
 
-  const [type, setType] = useState<TxType | null>(null);
-  const [tagIds, setTagIds] = useState<string[]>([]);
+  const [type, setType] = useState<TxType | null>(initialType);
+  const [tagIds, setTagIds] = useState<string[]>(initialTagIds);
   // Busca por descrição: o campo responde na hora e a consulta espera uma pausa na digitação.
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch] = useDebouncedValue(searchText.trim(), 300);
