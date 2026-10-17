@@ -385,7 +385,7 @@ export function DashboardView() {
         }
       >
         <ScrollArea.Autosize mah={400} type="auto" scrollbarSize={6} offsetScrollbars="y">
-          <Stack gap="sm">
+          <Stack gap="sm" pr={16}>
             {donutData.map((d) => (
               <TagRow key={d.name} slice={d} total={donutTotal} mask={mask} />
             ))}

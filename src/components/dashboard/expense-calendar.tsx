@@ -245,7 +245,7 @@ export function ExpenseCalendar({ from, to }: { from: string; to: string }) {
               {selected.items.length} {selected.items.length === 1 ? 'transação' : 'transações'} neste dia
             </Text>
             <ScrollArea.Autosize mah={360} type="auto" scrollbarSize={6} offsetScrollbars="y">
-              <Stack gap="md">
+              <Stack gap="md" pr={16}>
               {selected.items.map((e) => (
                 <Group key={e.id} justify="space-between" wrap="nowrap" align="flex-start">
                   <div style={{ minWidth: 0 }}>
