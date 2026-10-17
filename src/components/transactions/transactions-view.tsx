@@ -62,7 +62,17 @@ interface RawRow {
   total: number;
 }
 
-export function TransactionsView({ period, openNew = false }: { period: Period; openNew?: boolean }) {
+export function TransactionsView({
+  period,
+  openNew = false,
+  initialTagIds = [],
+  initialType = null,
+}: {
+  period: Period;
+  openNew?: boolean;
+  initialTagIds?: string[];
+  initialType?: TxType | null;
+}) {
   const { mask } = usePrivacy();
   const queryClient = useQueryClient();
   const router = useRouter();

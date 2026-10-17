@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import dayjs from 'dayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ActionIcon,
   Alert,
+  Anchor,
   Badge,
   Button,
   Group,
@@ -141,9 +143,20 @@ function TagTransactionsModal({
 
       {items.length > 0 && (
         <>
-          <Text size="sm" c="dimmed" mb="md">
-            {items.length} {items.length === 1 ? 'lançamento' : 'lançamentos'} neste mês
-          </Text>
+          <Group justify="space-between" align="center" mb="md" gap="xs">
+            <Text size="sm" c="dimmed">
+              {items.length} {items.length === 1 ? 'lançamento' : 'lançamentos'} neste mês
+            </Text>
+            {/* Abre a tela de Transações já filtrada: esta tag, este mês, só despesas (o que compõe o gasto). */}
+            <Anchor
+              component={Link}
+              href={`/transacoes?tag=${budget!.tag_id}&mes=${dayjs(from).format('YYYY-MM')}&tipo=expense`}
+              size="sm"
+              fw={600}
+            >
+              Ver em Transações
+            </Anchor>
+          </Group>
           <ScrollArea.Autosize mah={360} type="auto" scrollbarSize={6} offsetScrollbars="y">
             <Stack gap="md" pr={16}>
               {items.map((t) => (

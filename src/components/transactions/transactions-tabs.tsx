@@ -1,15 +1,29 @@
 'use client';
 
 import { useState } from 'react';
+import dayjs from 'dayjs';
 import { Group, Stack, Tabs, Text, Title } from '@mantine/core';
 import { IconHistory, IconRepeat } from '@tabler/icons-react';
 import { MonthNavigator, currentMonthPeriod, type Period } from '@/components/period-filter';
+import type { TxType } from '@/lib/types';
 import { RecurringView } from './recurring-view';
 import { TransactionsView } from './transactions-view';
 
-export function TransactionsTabs({ openNew = false }: { openNew?: boolean }) {
+interface Props {
+  openNew?: boolean;
+  /** Mês inicial, "YYYY-MM" (vem de um link). */
+  initialMonth?: string | null;
+  initialTagId?: string | null;
+  initialType?: TxType | null;
+}
+
+export function TransactionsTabs({ openNew = false, initialMonth = null, initialTagId = null, initialType = null }: Props) {
   const [tab, setTab] = useState<string | null>('history');
-  const [period, setPeriod] = useState<Period>(currentMonthPeriod);
+  const [period, setPeriod] = useState<Period>(() => {
+    if (!initialMonth) return currentMonthPeriod();
+    const month = dayjs(`${initialMonth}-01`);
+    return [month.startOf('month').format('YYYY-MM-DD'), month.endOf('month').format('YYYY-MM-DD')];
+  });
 
   return (
     <Stack gap="lg">
@@ -36,7 +50,12 @@ export function TransactionsTabs({ openNew = false }: { openNew?: boolean }) {
         </Tabs.List>
 
         <Tabs.Panel value="history" pt="lg">
-          <TransactionsView period={period} openNew={openNew} />
+          <TransactionsView
+            period={period}
+            openNew={openNew}
+            initialTagIds={initialTagId ? [initialTagId] : []}
+            initialType={initialType}
+          />
         </Tabs.Panel>
         <Tabs.Panel value="recurring" pt="lg">
           <RecurringView period={period} />
