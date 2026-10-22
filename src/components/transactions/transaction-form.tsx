@@ -1,13 +1,14 @@
 'use client';
 
 import dayjs from 'dayjs';
-import { Button, Group, NumberInput, SegmentedControl, Stack, Text, TextInput, Input } from '@mantine/core';
+import { Button, Group, SegmentedControl, Stack, Text, TextInput, Input } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { TagSelect } from '@/components/tag-select';
+import { MoneyInput } from '@/components/money-input';
 import { createClient } from '@/lib/supabase/client';
 import { fromCents, toCents } from '@/lib/money';
 import { transactionSchema, type TransactionValues } from '@/lib/schemas';
@@ -30,7 +31,7 @@ export function TransactionForm({ transaction, tags, onDone }: Props) {
     initialValues: {
       type: transaction?.type ?? 'expense',
       description: transaction?.description ?? '',
-      amount: transaction ? fromCents(transaction.amount_cents) : '',
+      amount: transaction ? fromCents(transaction.amount_cents) : 0,
       occurred_on: transaction?.occurred_on ?? dayjs().format('YYYY-MM-DD'),
       tag_ids: transaction?.tags.map((t) => t.id) ?? [],
     },
@@ -92,17 +93,7 @@ export function TransactionForm({ transaction, tags, onDone }: Props) {
         <TextInput label="Descrição" placeholder="Ex.: Supermercado" data-autofocus {...form.getInputProps('description')} />
 
         <Group grow align="flex-start">
-          <NumberInput
-            label="Valor"
-            prefix="R$ "
-            decimalScale={2}
-            fixedDecimalScale
-            decimalSeparator=","
-            thousandSeparator="."
-            min={0}
-            allowNegative={false}
-            {...form.getInputProps('amount')}
-          />
+          <MoneyInput label="Valor" {...form.getInputProps('amount')} />
           <DateInput
             label="Data"
             valueFormat="DD/MM/YYYY"

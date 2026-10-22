@@ -7,6 +7,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { MoneyInput } from '@/components/money-input';
 import { formatMonthLabel } from '@/components/period-filter';
 import { TagSelect } from '@/components/tag-select';
 import { createClient } from '@/lib/supabase/client';
@@ -56,7 +57,7 @@ export function RecurringForm({ recurring, tags, onDone }: Props) {
               ? (recurring.total_cents ?? recurring.amount_cents * (initialCount ?? 1))
               : recurring.amount_cents,
           )
-        : '',
+        : 0,
       day_of_month: recurring?.day_of_month ?? dayjs().date(),
       start_date: recurring?.start_date ?? dayjs().startOf('month').format(FMT),
       mode: initialMode,
@@ -179,17 +180,7 @@ export function RecurringForm({ recurring, tags, onDone }: Props) {
           />
         </Input.Wrapper>
 
-        <NumberInput
-          label={mode === 'installments' ? 'Valor total' : 'Valor mensal'}
-          prefix="R$ "
-          decimalScale={2}
-          fixedDecimalScale
-          decimalSeparator=","
-          thousandSeparator="."
-          min={0}
-          allowNegative={false}
-          {...form.getInputProps('amount')}
-        />
+        <MoneyInput label={mode === 'installments' ? 'Valor total' : 'Valor mensal'} {...form.getInputProps('amount')} />
 
         <Group grow align="flex-start">
           <MonthPickerInput
